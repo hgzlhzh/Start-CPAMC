@@ -9,8 +9,12 @@ pid := 0
 
 LoadConfig()
 
-; 使用脚本同目录下的托盘图标
-TraySetIcon(A_ScriptDir "\\CPAMC-logo.ico")
+; 托盘图标（编译时嵌入）
+tempIcon := A_Temp "\CPAMC_logo_" A_TickCount ".ico"
+if !FileExist(tempIcon)
+    FileInstall("CPAMC-logo.ico", tempIcon, 1)
+TraySetIcon(tempIcon)
+OnExit((*) => FileDelete(tempIcon))  ; 退出时清理临时文件
 
 A_TrayMenu.Delete()
 A_TrayMenu.Add("启动服务", StartService)
